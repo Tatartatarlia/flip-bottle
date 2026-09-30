@@ -65,7 +65,6 @@ export class FlipEngine {
   private prevLowY = 0;
   private overReason: "fail" | "exit" | null = null;
   private pointerDown = false;
-  private dpr = 1;
 
   constructor(canvas: HTMLCanvasElement, hooks: EngineHooks) {
     this.canvas = canvas;
@@ -126,7 +125,6 @@ export class FlipEngine {
     const { w, h } = viewportCssSize();
     layoutView(w, h);
     const dpr = window.devicePixelRatio || 1;
-    this.dpr = dpr;
     const bw = Math.max(1, Math.round(w * dpr));
     const bh = Math.max(1, Math.round(h * dpr));
     this.canvas.style.width = `${w}px`;
