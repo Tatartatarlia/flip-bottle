@@ -285,29 +285,29 @@ export function drawWorld(
   ctx.restore();
 
   ctx.fillStyle = "rgba(255,255,255,0.14)";
-  const scoreSize = Math.min(32, view.h * 0.04);
+  const scoreSize = Math.min(64, view.h * 0.11, view.w * 0.08);
   ctx.font = `${scoreSize}px Impact, sans-serif`;
   ctx.textAlign = "center";
-  ctx.fillText(String(score), view.w / 2, view.h * 0.16);
+  ctx.fillText(String(score), view.w / 2, view.h * 0.22);
 }
 
 export function exitBtn() {
   return {
-    x: view.w - view.padSide - 72,
+    x: view.w - view.padSide - 100,
     y: view.padTop,
-    w: 72,
-    h: 22,
+    w: 100,
+    h: 30,
   };
 }
 
 export function retryBtn() {
-  const ch = 148;
+  const ch = 188;
   const cy = (view.h - ch) / 2;
   return {
-    x: view.w / 2 - 46,
-    y: cy + 100,
-    w: 92,
-    h: 28,
+    x: view.w / 2 - 60,
+    y: cy + 128,
+    w: 120,
+    h: 36,
   };
 }
 
@@ -324,10 +324,10 @@ function pill(
   roundRect(ctx, x, y, w, h, h / 2);
   ctx.fill();
   ctx.fillStyle = "#fff8ee";
-  ctx.font = "11px sans-serif";
+  ctx.font = "bold 13px sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText(text, x + w / 2, y + h / 2 + 0.5);
+  ctx.fillText(text, x + w / 2, y + h / 2 + 1);
 }
 
 export function drawHud(
@@ -341,8 +341,8 @@ export function drawHud(
     ctx,
     view.padSide,
     view.padTop,
-    78,
-    22,
+    108,
+    30,
     "rgba(20,14,24,0.62)",
     `最高分 ${highScore}`,
   );
@@ -352,13 +352,13 @@ export function drawHud(
   }
 
   if (phase === "ready") {
-    const hintW = Math.min(280, view.w - 24);
-    const hintY = view.h - Math.max(view.padBottom, 16) - 10;
+    const hintW = Math.min(340, view.w - 24);
+    const hintY = view.h - Math.max(view.padBottom, 20) - 14;
     ctx.fillStyle = "rgba(255,248,235,0.78)";
-    roundRect(ctx, (view.w - hintW) / 2, hintY - 9, hintW, 18, 9);
+    roundRect(ctx, (view.w - hintW) / 2, hintY - 12, hintW, 24, 12);
     ctx.fill();
     ctx.fillStyle = "rgba(40,24,16,0.78)";
-    ctx.font = "11px sans-serif";
+    ctx.font = "12px sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(
@@ -371,29 +371,29 @@ export function drawHud(
   if (phase === "over") {
     ctx.fillStyle = "rgba(18,12,20,0.55)";
     ctx.fillRect(0, 0, view.w, view.h);
-    const cw = Math.min(240, view.w - 32);
-    const ch = 148;
+    const cw = Math.min(300, view.w - 32);
+    const ch = 188;
     const cx = (view.w - cw) / 2;
     const cy = (view.h - ch) / 2;
     ctx.fillStyle = "#fff8ee";
-    roundRect(ctx, cx, cy, cw, ch, 12);
+    roundRect(ctx, cx, cy, cw, ch, 14);
     ctx.fill();
     ctx.fillStyle = "#2b2118";
-    ctx.font = "bold 15px sans-serif";
+    ctx.font = "bold 20px sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "alphabetic";
-    ctx.fillText(overReason === "exit" ? "本局结算" : "水瓶落地了", view.w / 2, cy + 36);
-    ctx.font = "12px sans-serif";
-    ctx.fillText(`本局得分：${score}`, view.w / 2, cy + 60);
-    ctx.fillText(`历史最高：${highScore}`, view.w / 2, cy + 78);
+    ctx.fillText(overReason === "exit" ? "本局结算" : "水瓶落地了", view.w / 2, cy + 44);
+    ctx.font = "14px sans-serif";
+    ctx.fillText(`本局得分：${score}`, view.w / 2, cy + 76);
+    ctx.fillText(`历史最高：${highScore}`, view.w / 2, cy + 98);
     const rb = retryBtn();
     ctx.fillStyle = "#2ecc71";
     roundRect(ctx, rb.x, rb.y, rb.w, rb.h, rb.h / 2);
     ctx.fill();
     ctx.fillStyle = "#123018";
-    ctx.font = "12px sans-serif";
+    ctx.font = "bold 14px sans-serif";
     ctx.textBaseline = "middle";
-    ctx.fillText("再来一局", rb.x + rb.w / 2, rb.y + rb.h / 2 + 0.5);
+    ctx.fillText("再来一局", rb.x + rb.w / 2, rb.y + rb.h / 2 + 1);
   }
 }
 

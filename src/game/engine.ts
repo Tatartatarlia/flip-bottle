@@ -30,7 +30,7 @@ import {
 } from "./collide";
 import { drawHud, drawWorld, exitBtn, hitRect, retryBtn } from "./draw";
 import type { Book, Bottle, GameSnapshot, Phase, Platform } from "./types";
-import { layoutView, su, view, viewportCssSize } from "./view";
+import { layoutView, su, view } from "./view";
 import { ensureAhead, spawnInitial, standBottleY } from "./world";
 
 export type EngineHooks = {
@@ -65,6 +65,7 @@ export class FlipEngine {
   private prevLowY = 0;
   private overReason: "fail" | "exit" | null = null;
   private pointerDown = false;
+  private pixelRatio = 1;
 
   constructor(canvas: HTMLCanvasElement, hooks: EngineHooks) {
     this.canvas = canvas;
@@ -122,21 +123,28 @@ export class FlipEngine {
   private onResize = () => this.resize();
 
   private resize() {
-    const { w, h } = viewportCssSize();
+    const parent = this.canvas.parentElement ?? document.documentElement;
+    const rect = parent.getBoundingClientRect();
+    const w = Math.max(1, Math.round(rect.width));
+    const h = Math.max(1, Math.round(rect.height));
     layoutView(w, h);
     const dpr = window.devicePixelRatio || 1;
-    const bw = Math.max(1, Math.round(w * dpr));
-    const bh = Math.max(1, Math.round(h * dpr));
+    this.pixelRatio = dpr;
+    this.canvas.width = Math.max(1, Math.round(w * dpr));
+    this.canvas.height = Math.max(1, Math.round(h * dpr));
     this.canvas.style.width = `${w}px`;
     this.canvas.style.height = `${h}px`;
-    this.canvas.width = bw;
-    this.canvas.height = bh;
-    this.ctx.setTransform(bw / w, 0, 0, bh / h, 0, 0);
-    this.ctx.imageSmoothingEnabled = true;
-    this.ctx.imageSmoothingQuality = "high";
+    this.applyTransform();
     if (this.phase === "ready" && this.restPlatform) {
       this.bottle.y = this.restY();
     }
+  }
+
+  private applyTransform() {
+    const dpr = this.pixelRatio;
+    this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    this.ctx.imageSmoothingEnabled = true;
+    this.ctx.imageSmoothingQuality = "high";
   }
 
   private reset(emit: boolean) {
@@ -236,6 +244,7 @@ export class FlipEngine {
     this.update(dt, now);
     this.camX = lerp(this.camX, this.bottle.x - Math.min(su(220), view.w * 0.28), 0.12);
     ensureAhead(this.platforms, this.camX);
+    this.applyTransform();
     drawWorld(
       this.ctx,
       this.platforms,
